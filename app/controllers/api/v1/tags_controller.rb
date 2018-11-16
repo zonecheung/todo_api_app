@@ -5,7 +5,7 @@ module Api
 
       # GET /tags
       def index
-        @tags = Tag.all
+        @tags = Tag.by_title
 
         render json: @tags
       end
@@ -22,7 +22,8 @@ module Api
         if @tag.save
           render json: @tag, status: :created
         else
-          render json: @tag.errors, status: :unprocessable_entity
+          render json: { errors: @tag.errors },
+                 status: :unprocessable_entity
         end
       end
 
@@ -31,25 +32,41 @@ module Api
         if @tag.update(tag_params)
           render json: @tag
         else
-          render json: @tag.errors, status: :unprocessable_entity
+          render json: { errors: @tag.errors },
+                 status: :unprocessable_entity
         end
       end
 
       # DELETE /tags/1
       def destroy
-        @tag.destroy
+        if @tag.destroy
+          render json: {}
+        else
+          render json: { errors: @tag.errors },
+                 status: :unprocessable_entity
+        end
       end
 
       private
 
       # Use callbacks to share common setup or constraints between actions.
       def set_tag
-        @tag = Tag.find(params[:id])
+        @tag = Tag.find_by_id(params[:id])
+
+        return unless @tag.nil?
+
+        render json: { errors: { base: ["Tag ##{params[:id]} not found."] } },
+               status: :not_found
       end
 
       # Only allow a trusted parameter "white list" through.
+      def full_tag_params
+        params.require(:data)
+              .permit(:type, :id, attributes: [:title])
+      end
+
       def tag_params
-        params.fetch(:tag, {})
+        full_tag_params[:attributes]
       end
     end
   end

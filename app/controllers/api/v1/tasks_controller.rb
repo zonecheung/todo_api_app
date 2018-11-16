@@ -53,10 +53,10 @@ module Api
       def set_task
         @task = Task.find_by_id(params[:id])
 
-        if @task.nil?
-          render json: { errors: "Task ##{params[:id]} not found." },
-                 status: :not_found
-        end
+        return unless @task.nil?
+
+        render json: { errors: { base: ["Task ##{params[:id]} not found."] } },
+               status: :not_found
       end
 
       # Only allow a trusted parameter "white list" through.

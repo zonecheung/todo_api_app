@@ -89,6 +89,27 @@ describe Task, 'tags', type: :model do
         expect(Tag.where(title: 'potter')).to be_exists
       end
     end
+
+    context 'when destroyed' do
+      let!(:tagging_ids) { subject.taggings.pluck(:id) }
+      let!(:tag_ids) { subject.tags.pluck(:id) }
+
+      before(:each) do
+        subject.destroy
+      end
+
+      it 'should destroy associated taggings' do
+        tagging_ids.each do |id|
+          expect(Tagging.exists?(id)).to be(false)
+        end
+      end
+
+      it 'should not destroy the tags' do
+        tag_ids.each do |id|
+          expect(Tag.exists?(id)).to be(true)
+        end
+      end
+    end
   end
 end
 
