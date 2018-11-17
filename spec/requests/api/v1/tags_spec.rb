@@ -74,7 +74,7 @@ describe 'Tags', 'POST /api/v1/tags', type: :request do
     expect(response).to have_http_status(:created)
   end
 
-  it 'should increase the tag record count' do
+  it 'should increase the tags record count' do
     expect { post api_v1_tags_path, params: params }.to(
       change(Tag, :count).by(1)
     )
@@ -97,7 +97,7 @@ describe 'Tags', 'POST /api/v1/tags', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it 'should not change the tag record count' do
+    it 'should not change the tags record count' do
       expect { post api_v1_tags_path, params: params }.not_to(
         change(Tag, :count)
       )
@@ -172,7 +172,7 @@ describe 'Tags', 'DELETE /api/v1/tags/:id', type: :request do
     expect(response).to have_http_status(200)
   end
 
-  it 'should change the tag record count' do
+  it 'should change the tags record count' do
     expect { delete api_v1_tag_path(tag) }.to(
       change(Tag, :count).by(-1)
     )
