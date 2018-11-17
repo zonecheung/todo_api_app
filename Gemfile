@@ -29,6 +29,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # gem 'rack-cors'
 
 gem 'active_model_serializers', '~> 0.10.8'
+gem 'apipie-rails', '~> 0.5.13'
 gem 'versionist', '~> 1.7.0'
 
 group :development, :test do
@@ -43,7 +44,6 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'apipie-rails', '~> 0.5.13'
   gem 'rubocop', '~> 0.60.0', require: false
 end
 

@@ -4,18 +4,33 @@ module Api
       before_action :set_tag, only: %i[show update destroy]
 
       # GET /tags
+      api :GET, '/v1/tags', 'Retrieve tags sorted by title.'
       def index
         @tags = Tag.by_title
 
         render json: @tags
       end
 
+      def_param_group :tag_id do
+        param :id, :number, desc: 'Tag ID', required: true
+      end
+
       # GET /tags/1
+      api :GET, '/v1/tags/:id', 'Retrieve a tag based on ID.'
+      param_group :tag_id
       def show
         render json: @tag
       end
 
+      def_param_group :tag do
+        param :tag, Hash, desc: 'Tag info', required: true do
+          param :title, String, desc: 'Tag title', required: true
+        end
+      end
+
       # POST /tags
+      api :POST, '/v1/tags', 'Create a tag.'
+      param_group :tag
       def create
         @tag = Tag.new(tag_params)
 
@@ -28,6 +43,9 @@ module Api
       end
 
       # PATCH/PUT /tags/1
+      api :PATCH, '/v1/tags/:id', 'Update a tag.'
+      param_group :tag_id
+      param_group :tag
       def update
         if @tag.update(tag_params)
           render json: @tag
@@ -38,6 +56,8 @@ module Api
       end
 
       # DELETE /tags/1
+      api :DELETE, '/v1/tags/:id', 'Delete a tag.'
+      param_group :tag_id
       def destroy
         if @tag.destroy
           render json: {}

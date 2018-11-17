@@ -1,24 +1,37 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This API is developed using Ruby v2.5.1, Rails v5.2.1, and SQLite3 as database back-end.
 
-Things you may want to cover:
+## Installation
 
-* Ruby version
+ 1. Clone or download this repo to a directory.
 
-* System dependencies
+ 2. Run `bundle install` in that directory.
 
-* Configuration
+ 3. Create `config/database.yml` or copy & edit from `config/database.yml-example`.
 
-* Database creation
+ 4. Run `rake db:setup` to create the database for development and test envs.
 
-* Database initialization
+## Running
 
-* How to run the test suite
+ 1. Run `rails s` to start the server at the default port 3000.
 
-* Services (job queues, cache servers, search engines, etc.)
+## Testing
 
-* Deployment instructions
+For Rails unit and request specs, run `rake spec`.
 
-* ...
+## Files & Directories
+
+The files for Rails are located in `app` directory as usual, and the specs are in `spec`.
+
+## API Documentation
+
+I've added `apipie-rails` gem to handle the API documentation, please visit `http://localhost:3000/apipie` to view the list.
+
+## Miscellaneous
+
+The code is written based on certain `rubocop` recommendations, run `rubocop` to verify if there are any offenses.
+
+## Problems
+
+Some tests from Postman are checking the ids and titles of certain records, they need to be modified to reflect the real test environment.

@@ -4,18 +4,34 @@ module Api
       before_action :set_task, only: %i[show update destroy]
 
       # GET /tasks
+      api :GET, '/v1/tasks', 'Retrieve tasks with associated tags.'
       def index
         @tasks = Task.all.includes(taggings: :tag)
 
         render json: @tasks
       end
 
+      def_param_group :task_id do
+        param :id, :number, desc: 'Task ID', required: true
+      end
+
       # GET /tasks/1
+      api :GET, '/v1/tasks/:id', 'Retrieve a task based on ID.'
+      param_group :task_id
       def show
         render json: @task
       end
 
+      def_param_group :task do
+        param :task, Hash, desc: 'Task info', required: true do
+          param :title, String, desc: 'Task title', required: true
+          param :tags, Array, desc: 'Array of tag strings'
+        end
+      end
+
       # POST /tasks
+      api :POST, '/v1/tasks', 'Create a task.'
+      param_group :task
       def create
         @task = Task.new(task_params)
 
@@ -28,6 +44,9 @@ module Api
       end
 
       # PATCH/PUT /tasks/1
+      api :PATCH, '/v1/tasks/:id', 'Update a task.'
+      param_group :task_id
+      param_group :task
       def update
         if @task.update(task_params)
           render json: @task
@@ -38,6 +57,8 @@ module Api
       end
 
       # DELETE /tasks/1
+      api :DELETE, '/v1/tasks/:id', 'Delete a task.'
+      param_group :task_id
       def destroy
         if @task.destroy
           render json: {}
