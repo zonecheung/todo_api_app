@@ -18,13 +18,13 @@ describe 'Tags', 'GET /api/v1/tags', type: :request do
   it 'should have correct title in the tags' do
     get api_v1_tags_path
     expect(response.body).to(
-      be_json_eql('"barnes"').at_path('data/0/attributes/title')
+      be_json_eql('"james"').at_path('data/0/attributes/title')
     )
     expect(response.body).to(
       be_json_eql('"buchanan"').at_path('data/1/attributes/title')
     )
     expect(response.body).to(
-      be_json_eql('"james"').at_path('data/2/attributes/title')
+      be_json_eql('"barnes"').at_path('data/2/attributes/title')
     )
   end
 end

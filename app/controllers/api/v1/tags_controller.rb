@@ -4,9 +4,9 @@ module Api
       before_action :set_tag, only: %i[show update destroy]
 
       # GET /tags
-      api :GET, '/v1/tags', 'Retrieve tags sorted by title.'
+      api :GET, '/v1/tags', 'Retrieve tags.'
       def index
-        @tags = Tag.by_title
+        @tags = Tag.all
 
         render json: @tags
       end
