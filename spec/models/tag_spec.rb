@@ -28,22 +28,36 @@ describe Tag, 'validations', type: :model do
   end
 end
 
-describe Tag, 'json serialization output' do
-  let(:tag) { FactoryBot.create(:tag, title: 'Potter') }
-  let(:serializer) { TagSerializer.new(tag) }
-  subject { ActiveModelSerializers::Adapter.create(serializer).to_json }
+describe Tag, 'partial_match' do
+  let!(:tag1) { FactoryBot.create(:tag, title: 'foo') }
+  let!(:tag2) { FactoryBot.create(:tag, title: 'boo') }
+  let!(:tag3) { FactoryBot.create(:tag, title: 'baz') }
 
-  it 'should have id in json output' do
-    expect(subject).to be_json_eql("\"#{tag.id}\"").at_path('data/id')
+  it 'should return correct partial matches from the center of text' do
+    tags = Tag.partial_match('oo')
+    expect(tags).to include(tag1)
+    expect(tags).to include(tag2)
+    expect(tags).not_to include(tag3)
   end
 
-  it 'should have correct type in json output' do
-    expect(subject).to be_json_eql('"tags"').at_path('data/type')
+  it 'should return correct case insensitive partial matches from the center of text' do
+    tags = Tag.partial_match('OO')
+    expect(tags).to include(tag1)
+    expect(tags).to include(tag2)
+    expect(tags).not_to include(tag3)
   end
 
-  it 'should have correct title in json output' do
-    expect(subject).to(
-      be_json_eql('"Potter"').at_path('data/attributes/title')
-    )
+  it 'should return correct partial matches from the beginning of text' do
+    tags = Tag.partial_match('b')
+    expect(tags).not_to include(tag1)
+    expect(tags).to include(tag2)
+    expect(tags).to include(tag3)
+  end
+
+  it 'should return everything if the term is nil' do
+    tags = Tag.partial_match(nil)
+    expect(tags).to include(tag1)
+    expect(tags).to include(tag2)
+    expect(tags).to include(tag3)
   end
 end

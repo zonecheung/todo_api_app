@@ -5,4 +5,7 @@ class Tag < ApplicationRecord
   validates :title, presence: true, uniqueness: true
 
   scope :by_title, -> { order('title') }
+  scope :partial_match, lambda { |term|
+    term.nil? ? nil : where(['title LIKE ?', "%#{term}%"])
+  }
 end

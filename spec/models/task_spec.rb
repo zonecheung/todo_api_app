@@ -32,6 +32,10 @@ describe Task, 'tags', type: :model do
       expect(tag_names).to include('potter')
     end
 
+    it 'shoud have correct taggings and tags' do
+      expect(subject.tags.pluck(:title)).to eql(%w[harry potter])
+    end
+
     context 'when updated without tags' do
       before(:each) do
         subject.update_attributes!(title: 'Halfblood Prince')
@@ -113,37 +117,18 @@ describe Task, 'tags', type: :model do
   end
 end
 
-describe Task, 'json serialization output' do
-  let(:task) do
-    FactoryBot.create(:task, title: 'Potter', tags: %w[hermione granger])
-  end
-  let(:serializer) { TaskSerializer.new(task) }
-  subject { ActiveModelSerializers::Adapter.create(serializer).to_json }
+describe Task, 'with duplicated tags' do
+  subject { FactoryBot.create(:task, tags: %w[harry potter]) }
+  let!(:tag1) { subject.tags[0] }
+  let!(:tag2) { subject.tags[1] }
 
-  it 'should have id in json output' do
-    expect(subject).to be_json_eql("\"#{task.id}\"").at_path('data/id')
-  end
-
-  it 'should have correct type in json output' do
-    expect(subject).to be_json_eql('"tasks"').at_path('data/type')
+  before do
+    expect { subject.taggings[0].update_column(:tag_id, tag2.id) }.to raise_error
+    subject.reload
   end
 
-  it 'should have correct title in json output' do
-    expect(subject).to(
-      be_json_eql('"Potter"').at_path('data/attributes/title')
-    )
-  end
-
-  it 'should have correct number of tags' do
-    expect(subject).to have_json_size(2).at_path('data/relationships/tags/data')
-  end
-
-  it 'should have correct type in tags relationship' do
-    expect(subject).to(
-      be_json_eql('"tags"').at_path('data/relationships/tags/data/0/type')
-    )
-    expect(subject).to(
-      be_json_eql('"tags"').at_path('data/relationships/tags/data/1/type')
-    )
+  it 'should have same tag_id in both taggings' do
+    expect(subject.taggings[0].tag_id).to eql(tag1.id)
+    expect(subject.taggings[1].tag_id).to eql(tag2.id)
   end
 end

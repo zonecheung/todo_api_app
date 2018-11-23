@@ -6,7 +6,7 @@ module Api
       # GET /tags
       api :GET, '/v1/tags', 'Retrieve tags.'
       def index
-        @tags = Tag.all
+        @tags = Tag.partial_match(params[:q])
 
         render json: @tags
       end
